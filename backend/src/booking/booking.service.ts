@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Booking } from './booking.entity';
 import { Repository } from 'typeorm';
@@ -55,6 +55,23 @@ export class BookingService {
   await this.bookingRepo.save(booking);
   
 }
+
+  async cancelBooking(bookingId: number, userId: number) {
+    const booking = await this.bookingRepo.findOne({
+      where: { id: bookingId },
+      relations: ['event', 'user'],
+    });
+
+    if (!booking || booking.user.id !== userId) {
+      throw new ForbiddenException('You can only cancel your own bookings.');
+    }
+
+ 
+    booking.event.bookedSeats -= booking.seats;
+    await this.eventRepo.save(booking.event);
+
+    return this.bookingRepo.remove(booking); 
+  }
 
 
   async getMyBookings(userId: number) {

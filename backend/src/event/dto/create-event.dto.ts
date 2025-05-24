@@ -20,10 +20,10 @@ export class CreateEventDto {
   @IsNotEmpty({ message: 'Location is required' })
   location: string;
 
-  @IsNotEmpty({ message: 'Image URL is required' })
-  imageUrl: string;
-
   @IsInt({ message: 'Max seats must be a number' })
   @Min(1, { message: 'Max seats must be at least 1' })
   maxSeats: number;
+
+  @IsNotEmpty({ message: 'Tags are required' })
+  tags: string;
 }

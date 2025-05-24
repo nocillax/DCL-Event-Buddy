@@ -30,6 +30,9 @@ export class Event {
   @Column({ default: 0 })
   bookedSeats: number;
 
+  @Column()
+  tags: string;
+
   @CreateDateColumn()
   createdAt: Date;
 

@@ -11,7 +11,7 @@ export class EventService {
     private eventRepo: Repository<Event>,
   ) {}
 
-  async create(data: CreateEventDto) {
+  async create(data: CreateEventDto & { imageUrl: string }) {
     const event = this.eventRepo.create(data);
     return this.eventRepo.save(event);
   }
