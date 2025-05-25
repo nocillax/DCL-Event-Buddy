@@ -14,11 +14,22 @@ export class EventController {
 
 
   @Get()
-  getAll(@Query('upcoming') upcoming: string) {
-    if (upcoming === 'true') return this.eventService.findAll(true);
-    if (upcoming === 'false') return this.eventService.findAll(false);
-    return this.eventService.findAll();
+  getAll(
+    @Query('upcoming') upcoming: string,
+    @Query('page') page: string,
+    @Query('limit') limit: string,
+  ) {
+    const isUpcoming =
+      upcoming === 'true' ? true :
+      upcoming === 'false' ? false :
+      null;
+
+    const currentPage = parseInt(page) || 1;
+    const perPage = parseInt(limit) || 5; 
+
+    return this.eventService.findAll(isUpcoming, currentPage, perPage);
   }
+
 
 
   @Get(':id')
@@ -54,7 +65,7 @@ export class EventController {
       maxSeats: Number(raw.maxSeats),
     };
     
-    const imageUrl = `/uploads/${image.filename}`;
+    const imageUrl = image ? `/uploads/${image.filename}` : "";
     return this.eventService.create({ ...dto, imageUrl });
   }
 
@@ -108,4 +119,18 @@ export class EventController {
     }
     return this.eventService.delete(id);
   }
+
+  
+  @Get()
+  findAll(@Query('search') search?: string, @Query('upcoming') upcoming?: string) {
+    const isUpcoming = upcoming === 'true' ? true : upcoming === 'false' ? false : null;
+    
+    if (search) {
+      return this.eventService.searchEvents(search);
+    }
+
+    return this.eventService.findAll(isUpcoming);
+  }
+
+
 }
