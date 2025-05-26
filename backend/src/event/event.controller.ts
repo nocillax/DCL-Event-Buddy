@@ -66,6 +66,7 @@ export class EventController {
     };
     
     const imageUrl = image ? `/uploads/${image.filename}` : "";
+    
     return this.eventService.create({ ...dto, imageUrl });
   }
 

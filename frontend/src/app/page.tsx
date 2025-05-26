@@ -1,10 +1,10 @@
-// src/app/events/page.tsx
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import axios from '@/lib/axios';
 import dayjs from 'dayjs';
-import { FaCalendarAlt, FaChair, FaClock, FaMapMarkerAlt, FaTags, FaUsers } from 'react-icons/fa';
+import { FaCalendarAlt, FaChair, FaClock, FaMapMarkerAlt } from 'react-icons/fa';
+import Button from '@/components/Buttons';
 
 interface Event {
   id: number;
@@ -29,7 +29,8 @@ interface PaginatedResponse {
 }
 
 const EventsPage = () => {
-  const [search, setSearch] = useState('');
+
+    const [searchInput, setSearchInput] = useState('');
 
   const [upcomingEvents, setUpcomingEvents] = useState<Event[]>([]);
   const [previousEvents, setPreviousEvents] = useState<Event[]>([]);
@@ -49,8 +50,8 @@ const EventsPage = () => {
     setLoading(true);
     try {
       const [upcomingRes, previousRes] = await Promise.all([
-        axios.get<PaginatedResponse>(`http://localhost:3000/events?upcoming=true&page=${upcomingPage}&limit=${LIMIT}`),
-        axios.get<PaginatedResponse>(`http://localhost:3000/events?upcoming=false&page=${previousPage}&limit=${LIMIT}`),
+        axios.get<PaginatedResponse>(`/events?upcoming=true&page=${upcomingPage}&limit=${LIMIT}`),
+        axios.get<PaginatedResponse>(`/events?upcoming=false&page=${previousPage}&limit=${LIMIT}`),
       ]);
 
       setUpcomingEvents(upcomingRes.data.events);
@@ -71,19 +72,7 @@ const EventsPage = () => {
     fetchPaginatedEvents();
   }, [upcomingPage, previousPage]);
 
-  const handleSearch = async () => {
-    setLoading(true);
-    try {
-      const res = await axios.get<Event[]>(`http://localhost:3000/events/search?query=${search}`);
-      setUpcomingEvents(res.data); 
-      setPreviousEvents([]);
-    } catch (err) {
-      setError('Failed to search events');
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+
 
 const renderEventCard = (event: Event) => {
   const spotsLeft = event.maxSeats - event.bookedSeats;
@@ -93,36 +82,55 @@ const renderEventCard = (event: Event) => {
   const tagList = event.tags.split(',').map((tag) => tag.trim());
 
   return (
-    <div key={event.id} className="border border-gray-300 rounded-lg bg-white shadow-lg transition transform hover:scale-105" style={{ width: '400px', height: '470px' }}>
+    <div
+      key={event.id}
+      className="border border-gray-300 rounded-md bg-white shadow-lg transition transform flex flex-col" // Set flex and column direction
+      style={{ height: '470px' }} // Fixed height for the card
+    >
       {/* Conditionally render image if imageUrl is valid */}
       {event.imageUrl ? (
-        <img src={event.imageUrl} alt={event.title} className="h-48 w-full object-cover rounded-t-lg mb-4" />
+        <img
+          src={`${process.env.NEXT_PUBLIC_API_URL}${event.imageUrl}`}
+          alt={event.title}
+          className="h-48 w-full object-cover rounded-t-md mb-2"
+        />
       ) : (
-        <div className="h-48 w-full bg-gray-200 rounded-t-lg mb-4 flex items-center justify-center">
+        <div className="h-48 w-full bg-gray-200 rounded-t-md mb-2 flex items-center justify-center">
           <span className="text-gray-500">Image not available</span>
         </div>
       )}
 
-      <div className="p-4 space-y-2">
+      {/* Main content area */}
+      <div className="p-4 flex-grow space-y-2"> {/* Allow content to grow */}
+
         <div className="flex items-center">
-          <div className="flex flex-col items-start text-gray-600">
-            <span className="text-xs font-bold">{month}</span>
-            <span className="text-2xl font-bold">{day}</span>
+
+          <div className="flex flex-col items-start">
+            <span className="text-xs text-blue-700 font-extrabold">{month}</span>
+            <span className="text-2xl font-black">{day}</span>
           </div>
+
           <h2 className="text-2xl font-semibold text-gray-900 ml-5">
             {event.title}
           </h2>
+
         </div>
 
-        <p className="text-gray-700 mb-3">We’ll get you directly seated and inside for you to enjoy the conference.</p>
+        <p className="text-sm text-gray-700 mb-3">We’ll get you directly seated and inside for you to enjoy the conference.</p>
         
-        <div className="flex items-center text-gray-500 mb-3 space-x-4">
-          <FaCalendarAlt className="mr-1" />
-          <span>{dayjs(event.eventDate).format('dddd')}</span>
-          <FaClock className="mr-1" />
-          <span>{eventTime}</span>
-          <FaMapMarkerAlt className="mr-1" />
-          <span>{event.location}</span>
+        <div className="flex items-center text-sm text-gray-500 mb-3">
+          <div className="flex items-center space-x-1 mr-4"> {/* Group for date */}
+            <FaCalendarAlt className="mr-1" />
+            <span>{dayjs(event.eventDate).format('dddd')}</span>
+          </div>
+          <div className="flex items-center space-x-1 mr-4"> {/* Group for time */}
+            <FaClock className="mr-1" />
+            <span>{eventTime}</span>
+          </div>
+          <div className="flex items-center space-x-1"> {/* Group for location */}
+            <FaMapMarkerAlt className="mr-1" />
+            <span>{event.location}</span>
+          </div>
         </div>
         
         <div className="flex flex-wrap gap-2 mb-4">
@@ -131,82 +139,106 @@ const renderEventCard = (event: Event) => {
           ))}
         </div>
         
-        {/* Divider Line */}
-        <hr className="border-gray-300 mb-4" />
+        
+      </div>
 
-        {/* Spots Left and Total Seats layout */}
-        <div className="flex justify-between text-gray-700">
-          <div className="flex items-center">
-            <FaChair className="mr-2" />
-            <span>{spotsLeft} Spots Left</span>
-          </div>
-          <div className="text-gray-700">
-            <span>Total {event.maxSeats} Seats</span>
-          </div>
+      {/* Divider Line */}
+        <hr className="border-eb-blue-300 mb-2 mx-3" />
+
+      {/* Spots Left and Total Seats layout, anchored to the bottom */}
+      <div className="flex justify-between text-sm text-gray-700 p-4">
+        <div className="flex items-center">
+          <FaChair className="mr-2" />
+          <span>{spotsLeft} Spots Left</span>
+        </div>
+        <div className="text-gray-700">
+          <span>Total {event.maxSeats} Seats</span>
         </div>
       </div>
     </div>
   );
 };
 
-  const renderPagination = (page: number, totalPages: number, setPage: (page: number) => void) => (
-    <div className="flex justify-center items-center gap-2 my-4">
-      <button
-        onClick={() => setPage(Math.max(1, page - 1))}
-        className="px-4 py-2 bg-gray-300 rounded text-gray-700 hover:bg-gray-400 transition"
-        disabled={page <= 1}
-      >
-        Previous
-      </button>
-      <span className="text-lg text-gray-600">Page {page} of {totalPages}</span>
-      <button
-        onClick={() => setPage(Math.min(totalPages, page + 1))}
-        className="px-4 py-2 bg-gray-300 rounded text-gray-700 hover:bg-gray-400 transition"
-        disabled={page >= totalPages}
-      >
-        Next
-      </button>
-    </div>
-  );
+  const renderPagination = (currentPage: number, totalPages: number, setPage: (page: number) => void) => {
+    const pageNumbers = [];
+    
+    // Start looping from 1 to total pages
+    for (let i = 1; i <= totalPages; i++) {
+      pageNumbers.push(i);
+    }
+
+    return (
+      <div className="flex justify-center items-center gap-2 mt-10">
+        {pageNumbers.map((page) => (
+          <button
+            key={page}
+            onClick={() => setPage(page)}
+            className={`px-3 py-1 rounded-md ${
+              page === currentPage 
+                ? 'bg-blue-600 text-white' // Current page style
+                : 'border border-gray-400 text-gray-700 hover:bg-gray-100' // Other pages style
+            }`}
+          >
+            {page}
+          </button>
+        ))}
+      </div>
+    );
+  };
+
 
   if (loading) return <p className="text-center">Loading events...</p>;
   if (error) return <p className="text-red-600 text-center">{error}</p>;
+  
 
-  return (
-    <div className="container mx-auto p-6">
-      <h1 className="text-3xl font-extrabold text-gray-900 mb-6 text-center">Browse Events</h1>
+return (
+    <div className="container mx-auto">
 
-      <div className="flex mb-8 gap-2 justify-center">
-        <input
-          type="text"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search events..."
-          className="border border-gray-300 px-4 py-2 rounded w-full focus:ring-2 focus:ring-blue-500"
-        />
-        <button
-          onClick={handleSearch}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
-        >
-          Search
-        </button>
-      </div>
+      {/* Image and Search Section */}
+      <div className="relative w-full">
+        <img src="/Banner.svg" alt="Banner" className="w-full object-contain" />
+        <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-white">
 
-      <div className="mb-10">
-        <h2 className="text-2xl font-bold text-gray-800 mb-4">Upcoming Events</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {upcomingEvents.map(renderEventCard)}
+          {/* Search UI only - no functional handlers */}
+          <div className="mt-60 flex flex-col items-center gap-2 max-w-md w-full mx-auto">
+            <p className="font-bold text-gray-900">Find Your Next Event</p>
+
+            <div className="flex gap-2 w-full">
+              <input
+                type="text"
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+                placeholder="Search events"
+                className="border border-gray-300 px-4 py-3 rounded-sm flex-grow focus:outline-none focus:ring-1 focus:ring-blue-400 text-gray-700"
+              />
+              <Button className="px-6">
+                Search Events
+              </Button>
+            </div>
+          </div>
+
         </div>
-        {renderPagination(upcomingPage, upcomingTotalPages, setUpcomingPage)}
       </div>
 
-      <div>
-        <h2 className="text-2xl font-bold text-gray-800 mb-4">Previous Events</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {previousEvents.map(renderEventCard)}
+      {/* Events Section */}
+      <div className="bg-gray-200 p-6">
+        <div className="mb-10">
+          <h2 className="text-2xl font-bold text-gray-800 mb-4">Upcoming Events</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {upcomingEvents.map(renderEventCard)}
+          </div>
+          {renderPagination(upcomingPage, upcomingTotalPages, setUpcomingPage)}
         </div>
-        {renderPagination(previousPage, previousTotalPages, setPreviousPage)}
+
+        <div>
+          <h2 className="text-2xl font-bold text-gray-800 mb-4">Previous Events</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {previousEvents.map(renderEventCard)}
+          </div>
+          {renderPagination(previousPage, previousTotalPages, setPreviousPage)}
+        </div>
       </div>
+
     </div>
   );
 };

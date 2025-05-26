@@ -15,7 +15,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="en">
       <body className={inter.className}>
         <Navbar />
-        <main className="max-w-6xl mx-auto p-4 min-h-screen">
+        <main className="max-w-6xl mx-auto min-h-screen">
         {children}
         </main>
       </body>

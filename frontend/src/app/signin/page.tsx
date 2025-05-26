@@ -80,7 +80,7 @@ export default function SigninPage() {
 
           {error && <p className="text-red-600 text-sm">{error}</p>}
 
-          <Button type="submit" className="w-full">
+          <Button type="submit" className="w-full py-2">
             Sign In
           </Button>
 

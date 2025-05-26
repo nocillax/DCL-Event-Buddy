@@ -140,7 +140,7 @@ export default function SignupPage() {
             </div>
             
             
-            <Button type="submit" className="w-full">
+            <Button type="submit" className="w-full py-2">
               Sign Up
             </Button>
 

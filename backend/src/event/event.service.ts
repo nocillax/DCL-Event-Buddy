@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Like, Repository } from 'typeorm';
+import { ILike, Like, Repository } from 'typeorm';
 import { Event } from './event.entity';
 import { CreateEventDto } from './dto/create-event.dto';
 
@@ -95,10 +95,9 @@ export class EventService {
   async searchEvents(query: string) {
     return this.eventRepo.find({
       where: [
-        { title: Like(`%${query}%`) },
-        { description: Like(`%${query}%`) },
-        { location: Like(`%${query}%`) },
-        { tags: Like(`%${query}%`) },
+        { title: ILike(`%${query}%`) },
+        { location: ILike(`%${query}%`) },
+        { tags: ILike(`%${query}%`) },
       ],
       order: {
         eventDate: 'DESC',
