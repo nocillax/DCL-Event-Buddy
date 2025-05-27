@@ -11,7 +11,6 @@ type EventFormProps = {
   onClose?: () => void;
 };
 
-
 type EventFormData = {
   title: string;
   description: string;
@@ -24,16 +23,21 @@ type EventFormData = {
   image: File | null;
 };
 
-const EventForm: React.FC<EventFormProps> = ({ mode, initialValues = {}, onSubmit, onClose }) => {
+const EventForm: React.FC<EventFormProps> = ({
+  mode,
+  initialValues = {},
+  onSubmit,
+  onClose,
+}) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [touched, setTouched] = useState<Record<string, boolean>>({});
 
-
-const [showTimePicker, setShowTimePicker] = useState(false);
-
+  const [showTimePicker, setShowTimePicker] = useState(false);
 
   const [title, setTitle] = useState(initialValues.title || '');
-  const [description, setDescription] = useState(initialValues.description || '');
+  const [description, setDescription] = useState(
+    initialValues.description || ''
+  );
   const [eventDate, setEventDate] = useState(initialValues.eventDate || '');
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
@@ -48,7 +52,8 @@ const [showTimePicker, setShowTimePicker] = useState(false);
 
   const validate = () => {
     const e: Record<string, string> = {};
-    if (title.trim().length < 3) e.title = 'Title must be at least 3 characters';
+    if (title.trim().length < 3)
+      e.title = 'Title must be at least 3 characters';
     if (description.trim().length < 10) e.description = 'Description too short';
     if (!eventDate) e.eventDate = 'Date is required';
     if (!startTime) e.startTime = 'Start time is required';
@@ -61,23 +66,31 @@ const [showTimePicker, setShowTimePicker] = useState(false);
 
   useEffect(() => {
     setErrors(validate());
-  }, [title, description, eventDate, startTime, endTime, location, maxSeats, tags]);
+  }, [
+    title,
+    description,
+    eventDate,
+    startTime,
+    endTime,
+    location,
+    maxSeats,
+    tags,
+  ]);
 
   useEffect(() => {
-  if (mode === 'edit' && initialValues.startTime && initialValues.endTime) {
-    const st = initialValues.startTime.slice(0, 5); // e.g., "09:00"
-    const et = initialValues.endTime.slice(0, 5);
+    if (mode === 'edit' && initialValues.startTime && initialValues.endTime) {
+      const st = initialValues.startTime.slice(0, 5); // e.g., "09:00"
+      const et = initialValues.endTime.slice(0, 5);
 
-    setStartTime(st);
-    setEndTime(et);
+      setStartTime(st);
+      setEndTime(et);
 
-    const formattedStart = dayjs(`2024-01-01T${st}`).format('hh:mm A');
-    const formattedEnd = dayjs(`2024-01-01T${et}`).format('hh:mm A');
+      const formattedStart = dayjs(`2024-01-01T${st}`).format('hh:mm A');
+      const formattedEnd = dayjs(`2024-01-01T${et}`).format('hh:mm A');
 
-    setTimeRangeDisplay(`${formattedStart} – ${formattedEnd}`);
-  }
-}, [initialValues, mode]);
-
+      setTimeRangeDisplay(`${formattedStart} – ${formattedEnd}`);
+    }
+  }, [initialValues, mode]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -102,8 +115,14 @@ const [showTimePicker, setShowTimePicker] = useState(false);
     formData.append('title', title);
     formData.append('description', description);
     formData.append('eventDate', eventDate);
-    formData.append('startTime', startTime.length === 5 ? `${startTime}:00` : startTime);
-    formData.append('endTime', endTime.length === 5 ? `${endTime}:00` : endTime);
+    formData.append(
+      'startTime',
+      startTime.length === 5 ? `${startTime}:00` : startTime
+    );
+    formData.append(
+      'endTime',
+      endTime.length === 5 ? `${endTime}:00` : endTime
+    );
     formData.append('location', location);
     formData.append('maxSeats', maxSeats.toString());
     formData.append('tags', tags);
@@ -127,7 +146,9 @@ const [showTimePicker, setShowTimePicker] = useState(false);
           onBlur={() => setTouched((prev) => ({ ...prev, title: true }))}
           className="w-full border rounded-md px-3 py-2"
         />
-        {touched.title && errors.title && <p className="text-red-500">{errors.title}</p>}
+        {touched.title && errors.title && (
+          <p className="text-red-500">{errors.title}</p>
+        )}
       </div>
 
       <div>
@@ -139,7 +160,9 @@ const [showTimePicker, setShowTimePicker] = useState(false);
           className="w-full border rounded-md px-3 py-2"
           rows={3}
         />
-        {touched.description && errors.description && <p className="text-red-500">{errors.description}</p>}
+        {touched.description && errors.description && (
+          <p className="text-red-500">{errors.description}</p>
+        )}
       </div>
 
       <div className="flex gap-4">
@@ -152,7 +175,9 @@ const [showTimePicker, setShowTimePicker] = useState(false);
             onBlur={() => setTouched((prev) => ({ ...prev, eventDate: true }))}
             className="w-full border rounded-md px-3 py-2"
           />
-          {touched.eventDate && errors.eventDate && <p className="text-red-500">{errors.eventDate}</p>}
+          {touched.eventDate && errors.eventDate && (
+            <p className="text-red-500">{errors.eventDate}</p>
+          )}
         </div>
 
         <div className="flex-1">
@@ -195,8 +220,14 @@ const [showTimePicker, setShowTimePicker] = useState(false);
                 </button>
                 <button
                   onClick={() => {
-                    const parsedStart = dayjs(`2024-01-01T${startTime}`, 'YYYY-MM-DDTHH:mm');
-                    const parsedEnd = dayjs(`2024-01-01T${endTime}`, 'YYYY-MM-DDTHH:mm');
+                    const parsedStart = dayjs(
+                      `2024-01-01T${startTime}`,
+                      'YYYY-MM-DDTHH:mm'
+                    );
+                    const parsedEnd = dayjs(
+                      `2024-01-01T${endTime}`,
+                      'YYYY-MM-DDTHH:mm'
+                    );
 
                     const formattedStart = parsedStart.format('hh:mm A');
                     const formattedEnd = parsedEnd.format('hh:mm A');
@@ -204,17 +235,13 @@ const [showTimePicker, setShowTimePicker] = useState(false);
                     setTimeRangeDisplay(`${formattedStart} – ${formattedEnd}`);
                     setShowTimePicker(false);
                   }}
-
                   disabled={!startTime || !endTime}
                 >
                   Set Time
                 </button>
-
-
               </div>
             </div>
           )}
-
         </div>
       </div>
 
@@ -227,7 +254,9 @@ const [showTimePicker, setShowTimePicker] = useState(false);
           onBlur={() => setTouched((prev) => ({ ...prev, location: true }))}
           className="w-full border rounded-md px-3 py-2"
         />
-        {touched.location && errors.location && <p className="text-red-500">{errors.location}</p>}
+        {touched.location && errors.location && (
+          <p className="text-red-500">{errors.location}</p>
+        )}
       </div>
 
       <div className="flex gap-4">
@@ -241,7 +270,9 @@ const [showTimePicker, setShowTimePicker] = useState(false);
             onBlur={() => setTouched((prev) => ({ ...prev, maxSeats: true }))}
             className="w-full border rounded-md px-3 py-2"
           />
-          {touched.maxSeats && errors.maxSeats && <p className="text-red-500">{errors.maxSeats}</p>}
+          {touched.maxSeats && errors.maxSeats && (
+            <p className="text-red-500">{errors.maxSeats}</p>
+          )}
         </div>
 
         <div className="flex-1">
@@ -253,18 +284,30 @@ const [showTimePicker, setShowTimePicker] = useState(false);
             onBlur={() => setTouched((prev) => ({ ...prev, tags: true }))}
             className="w-full border rounded-md px-3 py-2"
           />
-          {touched.tags && errors.tags && <p className="text-red-500">{errors.tags}</p>}
+          {touched.tags && errors.tags && (
+            <p className="text-red-500">{errors.tags}</p>
+          )}
         </div>
       </div>
 
       <div>
         <label className="block font-medium mb-2">Image</label>
         <div className="flex items-center gap-4">
-          <div onClick={handleImageBrowse} className="rounded-full cursor-pointer">
+          <div
+            onClick={handleImageBrowse}
+            className="rounded-full cursor-pointer"
+          >
             <img src="/Upload.svg" alt="Upload" />
           </div>
           <div className="text-sm">
-            Drag or <span className="text-blue-600 underline cursor-pointer" onClick={handleImageBrowse}>upload</span> the picture
+            Drag or{' '}
+            <span
+              className="text-blue-600 underline cursor-pointer"
+              onClick={handleImageBrowse}
+            >
+              upload
+            </span>{' '}
+            the picture
             <br />
             <span className="text-gray-500">Max. 5MB | JPG, PNG</span>
           </div>
@@ -304,19 +347,18 @@ const [showTimePicker, setShowTimePicker] = useState(false);
 
       <div className="flex justify-end gap-4 pt-4">
         {onClose && (
-            <button
+          <button
             type="button"
             onClick={() => onClose()}
             className="text-gray-500 hover:text-gray-700 text-sm font-medium"
-            >
+          >
             Cancel
-            </button>
+          </button>
         )}
         <Button type="submit" className="text-white px-4 py-2 text-sm">
-            {mode === 'edit' ? 'Update Event' : 'Create Event'}
+          {mode === 'edit' ? 'Update Event' : 'Create Event'}
         </Button>
-        </div>
-
+      </div>
     </form>
   );
 };

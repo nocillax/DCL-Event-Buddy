@@ -4,7 +4,6 @@ import { Dialog } from '@headlessui/react';
 import { IoMdClose } from 'react-icons/io';
 import { useEffect, useState } from 'react';
 import axios from '@/lib/axios';
-import { useRouter } from 'next/navigation';
 import EventForm from '@/components/EventForm';
 
 type EditEventModalProps = {
@@ -13,8 +12,6 @@ type EditEventModalProps = {
 };
 
 const EditEventModal: React.FC<EditEventModalProps> = ({ id, onClose }) => {
-  const router = useRouter();
-
   const [initialValues, setInitialValues] = useState<any>(null);
   const [error, setError] = useState('');
 
@@ -61,7 +58,11 @@ const EditEventModal: React.FC<EditEventModalProps> = ({ id, onClose }) => {
   };
 
   return (
-    <Dialog open={true} onClose={onClose} className="fixed z-50 inset-0 overflow-y-auto">
+    <Dialog
+      open={true}
+      onClose={onClose}
+      className="fixed z-50 inset-0 overflow-y-auto"
+    >
       <div className="flex items-center justify-center min-h-screen px-4">
         <div className="fixed inset-0 bg-black opacity-30" />
         <div className="relative bg-white rounded-xl w-full max-w-xl p-6 shadow-xl z-50">
@@ -71,10 +72,19 @@ const EditEventModal: React.FC<EditEventModalProps> = ({ id, onClose }) => {
           >
             <IoMdClose size={20} />
           </button>
-          <h2 className="text-2xl font-medium text-eb-purple mb-6">Edit Event</h2>
+          <h2 className="text-2xl font-medium text-eb-purple mb-6">
+            Edit Event
+          </h2>
           {error && <p className="text-red-500">{error}</p>}
-          {!initialValues ? <p>Loading...</p> : (
-            <EventForm mode="edit" initialValues={initialValues} onSubmit={handleUpdate} onClose={onClose}/>
+          {!initialValues ? (
+            <p>Loading...</p>
+          ) : (
+            <EventForm
+              mode="edit"
+              initialValues={initialValues}
+              onSubmit={handleUpdate}
+              onClose={onClose}
+            />
           )}
         </div>
       </div>

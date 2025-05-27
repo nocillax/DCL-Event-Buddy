@@ -9,7 +9,6 @@ import PageContainer from '@/components/PageContainer';
 import CreateEventModal from '@/components/CreateEventModal';
 import EditEventModal from '@/components/EditEventModal';
 
-
 interface Event {
   id: number;
   title: string;
@@ -28,9 +27,7 @@ interface EventsApiResponse {
   totalPages: number;
 }
 
-
 const AdminDashboardPage = () => {
-
   const router = useRouter();
   const [events, setEvents] = useState<Event[]>([]);
   const [adminName, setAdminName] = useState('');
@@ -42,18 +39,17 @@ const AdminDashboardPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editId, setEditId] = useState<number | null>(null);
 
-
-
   const fetchEvents = async (pageNumber: number) => {
-  setLoading(true);
+    setLoading(true);
     try {
-      const res = await axios.get<EventsApiResponse>(`/events?page=${pageNumber}`);
+      const res = await axios.get<EventsApiResponse>(
+        `/events?page=${pageNumber}`
+      );
       setTotalPages(res.data.totalPages);
 
       if (pageNumber === 1) {
         setEvents(res.data.events);
-      } 
-      else {
+      } else {
         setEvents((prev) => {
           const newEvents = res.data.events;
 
@@ -64,29 +60,22 @@ const AdminDashboardPage = () => {
           return [...prev, ...uniqueEvents];
         });
       }
-    } 
-    catch {
+    } catch {
       setError('Failed to load events');
-    } 
-    finally {
+    } finally {
       setLoading(false);
     }
   };
 
-
   const loadMore = () => {
     if (page < totalPages && !loading) {
       const nextPage = page + 1;
-      fetchEvents(nextPage);     
-      setPage(nextPage);  
+      fetchEvents(nextPage);
+      setPage(nextPage);
     }
   };
 
-
-  
-
   useEffect(() => {
-
     const token = localStorage.getItem('token');
     if (!token) {
       router.push('/signin');
@@ -100,23 +89,17 @@ const AdminDashboardPage = () => {
         return;
       }
       setAdminName(payload.name || payload.email || 'Admin');
-    } 
-    catch {
+    } catch {
       router.push('/signin');
     }
 
     fetchEvents(1);
   }, [router]);
 
-  
-
-
-  const handleEdit = (id: number) => {
-    router.push(`/event/edit/${id}`);
-  };
-
   const handleDelete = async (id: number) => {
-    const confirmDelete = window.confirm('Are you sure you want to delete this event?');
+    const confirmDelete = window.confirm(
+      'Are you sure you want to delete this event?'
+    );
     if (!confirmDelete) return;
 
     const token = localStorage.getItem('token');
@@ -130,94 +113,107 @@ const AdminDashboardPage = () => {
     }
   };
 
- return (
-  <PageContainer>
-
+  return (
+    <PageContainer>
       <div className="p-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-3xl font-medium text-eb-purple mt-12 ">Admin Dashboard</h2>
-      </div>
-      <p className="text-[#6A5A8A] mt-2">Manage events, view registrations, and monitor your platform.</p>
-    </div>
-
-    <div className="p-6 flex-grow">
-      <div className="flex justify-between items-center mb-4">
-        <h3 className="text-lg font-medium text-eb-purple">Events Management</h3>
-
-        <Button
-          onClick={() => setIsModalOpen(true)}
-          className="px-3 py-2 font-medium text-sm"
-        >
-          Create Event
-        </Button>
-
-        
+        <div className="flex justify-between items-center">
+          <h2 className="text-3xl font-medium text-eb-purple mt-12 ">
+            Admin Dashboard
+          </h2>
+        </div>
+        <p className="text-[#6A5A8A] mt-2">
+          Manage events, view registrations, and monitor your platform.
+        </p>
       </div>
 
-      {error && <p className="text-red-500">{error}</p>}
+      <div className="p-6 flex-grow">
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-lg font-medium text-eb-purple">
+            Events Management
+          </h3>
 
-      <div className="overflow-x-auto">
-        {events.length === 0 ? (
-          <p>No events found.</p>
-        ) : (
-          <table className="w-full table-auto border-collapse text-eb-purple">
-            <thead>
-              <tr className="bg-[#FFFFFF] border border-gray-300 text-xs text-left">
-                <th className="px-4 py-2 ">Title</th>
-                <th className="px-4 py-2 ">Date</th>
-                <th className="px-4 py-2 ">Location</th>
-                <th className="px-4 py-2 ">Registrations</th>
-                <th className="px-4 py-2 ">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {events.map((e) => (
-                <tr key={e.id} className="hover:bg-gray-50 border-b border-gray-200 text-xs">
-                  <td className="px-4 py-2">{e.title}</td>
-                  <td className="px-4 py-2">{e.eventDate}</td>
-                  <td className="px-4 py-2">{e.location}</td>
-                  <td className="px-4 py-2">{e.bookedSeats} / {e.maxSeats}</td>
-                  <td className="px-4 py-2 text-xs flex space-x-2">
+          <Button
+            onClick={() => setIsModalOpen(true)}
+            className="px-3 py-2 font-medium text-sm"
+          >
+            Create Event
+          </Button>
+        </div>
 
-                    <button className="text-gray-600 hover:text-blue-600">
-                      <FaEye />
-                    </button>
+        {error && <p className="text-red-500">{error}</p>}
 
-                    <button onClick={() => setEditId(e.id)} className="text-gray-600 hover:text-blue-600">
-                      <FaEdit />
-                    </button>
-
-                    <button onClick={() => handleDelete(e.id)} className="text-red-600 hover:text-red-700">
-                      <FaTrash />
-                    </button>
-                  </td>
+        <div className="overflow-x-auto">
+          {events.length === 0 ? (
+            <p>No events found.</p>
+          ) : (
+            <table className="w-full table-auto border-collapse text-eb-purple">
+              <thead>
+                <tr className="bg-[#FFFFFF] border border-gray-300 text-xs text-left">
+                  <th className="px-4 py-2 ">Title</th>
+                  <th className="px-4 py-2 ">Date</th>
+                  <th className="px-4 py-2 ">Location</th>
+                  <th className="px-4 py-2 ">Registrations</th>
+                  <th className="px-4 py-2 ">Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
+              </thead>
+              <tbody>
+                {events.map((e) => (
+                  <tr
+                    key={e.id}
+                    className="hover:bg-gray-50 border-b border-gray-200 text-xs"
+                  >
+                    <td className="px-4 py-2">{e.title}</td>
+                    <td className="px-4 py-2">{e.eventDate}</td>
+                    <td className="px-4 py-2">{e.location}</td>
+                    <td className="px-4 py-2">
+                      {e.bookedSeats} / {e.maxSeats}
+                    </td>
+                    <td className="px-4 py-2 text-xs flex space-x-2">
+                      <button className="text-gray-600 hover:text-blue-600">
+                        <FaEye />
+                      </button>
 
+                      <button
+                        onClick={() => setEditId(e.id)}
+                        className="text-gray-600 hover:text-blue-600"
+                      >
+                        <FaEdit />
+                      </button>
 
-        {page < totalPages && (
-          <div className="flex justify-center mt-4">
-            <Button
-              onClick={loadMore}
-              className="px-3 py-2 text-xs font-semibold"
-            >
-              Load More
-            </Button>
-          </div>
-        )}
+                      <button
+                        onClick={() => handleDelete(e.id)}
+                        className="text-red-600 hover:text-red-700"
+                      >
+                        <FaTrash />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
 
+          {page < totalPages && (
+            <div className="flex justify-center mt-4">
+              <Button
+                onClick={loadMore}
+                className="px-3 py-2 text-xs font-semibold"
+              >
+                Load More
+              </Button>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
-    <CreateEventModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
-      
+      <CreateEventModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
+
       {editId !== null && (
         <EditEventModal id={editId} onClose={() => setEditId(null)} />
       )}
-
     </PageContainer>
-);
-}
+  );
+};
 export default AdminDashboardPage;

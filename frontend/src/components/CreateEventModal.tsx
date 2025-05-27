@@ -11,7 +11,10 @@ type CreateEventModalProps = {
   onClose: () => void;
 };
 
-const CreateEventModal: React.FC<CreateEventModalProps> = ({ isOpen, onClose }) => {
+const CreateEventModal: React.FC<CreateEventModalProps> = ({
+  isOpen,
+  onClose,
+}) => {
   const router = useRouter();
 
   const handleCreate = async (formData: FormData) => {
@@ -27,12 +30,15 @@ const CreateEventModal: React.FC<CreateEventModalProps> = ({ isOpen, onClose }) 
       window.location.reload();
     } catch (err) {
       console.error('Failed to create event:', err);
-      // You can improve this by passing an error handler to EventForm if needed
     }
   };
 
   return (
-    <Dialog open={isOpen} onClose={onClose} className="fixed z-50 inset-0 overflow-y-auto">
+    <Dialog
+      open={isOpen}
+      onClose={onClose}
+      className="fixed z-50 inset-0 overflow-y-auto"
+    >
       <div className="flex items-center justify-center min-h-screen px-4">
         <div className="fixed inset-0 bg-black opacity-30" />
         <div className="relative bg-white rounded-xl w-full max-w-xl p-6 shadow-xl z-50">
@@ -42,7 +48,9 @@ const CreateEventModal: React.FC<CreateEventModalProps> = ({ isOpen, onClose }) 
           >
             <IoMdClose size={20} />
           </button>
-          <h2 className="text-2xl font-medium text-eb-purple mb-6">Create New Event</h2>
+          <h2 className="text-2xl font-medium text-eb-purple mb-6">
+            Create New Event
+          </h2>
           <EventForm mode="create" onSubmit={handleCreate} onClose={onClose} />
         </div>
       </div>
