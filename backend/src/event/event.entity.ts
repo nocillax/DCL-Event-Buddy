@@ -15,9 +15,6 @@ export class Event {
   eventDate: string; // format: 'YYYY-MM-DD'
 
   @Column({ type: 'time', nullable: true })
-  eventTime: string; // format: 'HH:mm:ss'
-
-  @Column({ type: 'time', nullable: true })
   startTime: string; // format: 'HH:mm:ss'
 
   @Column({ type: 'time', nullable: true })

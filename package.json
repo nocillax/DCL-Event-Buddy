@@ -1,0 +1,24 @@
+{
+  "name": "dcl-event-buddy",
+  "version": "1.0.0",
+  "description": "DCL Internship: Round 1 Assignment [Full Stack]",
+  "main": "index.js",
+  "scripts": {
+    "install-all": "npm --prefix frontend install && npm --prefix backend install",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "dev:backend": "npm --prefix backend run start:dev",
+    "start:all": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nocillax/DCL-Event-Buddy.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/nocillax/DCL-Event-Buddy/issues"
+  },
+  "homepage": "https://github.com/nocillax/DCL-Event-Buddy#readme"
+}

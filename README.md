@@ -1,27 +1,55 @@
-# DCL-Event-Buddy
-DCL Internship: Round 1 Assignment [Full Stack]
+# 🎟️ DCL Event Buddy – Full Stack Application
 
-# 🎟️ Event Buddy – Backend (NestJS)
+> Internship Project – Deepchain Labs (Round 1 Assessment)
 
-This is the backend service for **Event Buddy**, an event booking system built for the Deepchain Labs Full-Stack Internship Round 1 assessment.
-
-## 🚀 Tech Stack
-
-- **NestJS** (TypeScript)
-- **PostgreSQL** (via TypeORM)
-- **JWT Authentication**
-- **Class Validator + Pipes** for clean validation
-- **Postman Tested** (admin/user flows)
+Event Buddy is a full-stack event management platform allowing users to browse and book events, and giving admins full control over event listings. This repo contains both the **frontend (Next.js)** and **backend (NestJS + PostgreSQL)** services.
 
 ---
 
-## ⚙️ Setup Instructions
+## 🚀 Tech Stack
 
-### 1. Clone the repository
+- **Frontend:** Next.js, TypeScript, Tailwind CSS
+- **Backend:** NestJS, TypeORM, PostgreSQL
+- **Authentication:** JWT-based
+- **Validation:** class-validator (server), custom client-side validation
+- **API Testing:** Postman
+
+---
+
+## 📁 Project Structure
+
+```
+/DCL-Event-Buddy
+│
+├── frontend/    → Next.js client (port: 3001)
+├── backend/     → NestJS API server (port: 3000)
+└── README.md    → You're here
+```
+
+---
+
+## ⚙️ Global Setup (Recommended)
+
+Install dependencies for both frontend and backend with one command:
 
 ```bash
-git clone https://github.com/nocillax/event-buddy-backend.git
-cd event-buddy-backend
+npm run install-all
+```
+
+To run both servers together:
+
+```bash
+npm run start:all
+```
+
+---
+
+## 🧩 Frontend Setup – Next.js (Port: 3001)
+
+### 1. Navigate to frontend folder
+
+```bash
+cd frontend
 ```
 
 ### 2. Install dependencies
@@ -30,11 +58,37 @@ cd event-buddy-backend
 npm install
 ```
 
-### 3. Configure environment variables
+### 3. Create `.env.local`
 
-Create a `.env` file at the root:
-
+```env
+NEXT_PUBLIC_API_URL=http://localhost:3000
 ```
+
+### 4. Start the frontend dev server
+
+```bash
+npm run dev
+```
+
+---
+
+## 🛠 Backend Setup – NestJS (Port: 3000)
+
+### 1. Navigate to backend folder
+
+```bash
+cd backend
+```
+
+### 2. Install dependencies
+
+```bash
+npm install
+```
+
+### 3. Create `.env`
+
+```env
 DB_HOST=localhost
 DB_PORT=5432
 DB_USERNAME=your_db_username
@@ -43,14 +97,13 @@ DB_NAME=eventbuddy
 JWT_SECRET=supersecretkey
 ```
 
-> 📝 Use `your_db_username` and `your_db_password` as per your local PostgreSQL setup.
+### 4. Set up the database
 
-### 4. Set up PostgreSQL
-
+- Ensure PostgreSQL is running
 - Create a database named `eventbuddy`
-- Tables will be auto-generated on app start (thanks to `synchronize: true`)
+- Tables will be auto-created on app start (`synchronize: true`)
 
-### 5. Run the app
+### 5. Run the backend dev server
 
 ```bash
 npm run start:dev
@@ -58,49 +111,49 @@ npm run start:dev
 
 ---
 
-## 📌 API Overview (Testable via Postman)
+## 📌 API Overview
 
-### 🔐 Auth
+### 🔐 Auth Routes
 
-| Route             | Method | Description          |
-|------------------|--------|----------------------|
-| `/auth/signup`   | POST   | Register a user      |
-| `/auth/login`    | POST   | Login & get JWT      |
+| Method | Endpoint         | Description     |
+|--------|------------------|-----------------|
+| POST   | /auth/signup     | Register a user |
+| POST   | /auth/login      | Login + JWT     |
 
 ### 📅 Events
 
-| Route                | Method | Role    | Description              |
-|---------------------|--------|---------|--------------------------|
-| `/events`           | GET    | Public  | List all events          |
-| `/events/:id`       | GET    | Public  | Event details            |
-| `/events?upcoming=` | GET    | Public  | Filter past/upcoming     |
-| `/events`           | POST   | Admin   | Create new event         |
-| `/events/:id`       | PATCH  | Admin   | Edit event (partial)     |
-| `/events/:id`       | DELETE | Admin   | Delete event             |
+| Method | Endpoint                  | Role    | Description              |
+|--------|---------------------------|---------|--------------------------|
+| GET    | /events                   | Public  | List all events          |
+| GET    | /events/:id               | Public  | Get event details        |
+| GET    | /events?upcoming=true     | Public  | Filter upcoming events   |
+| POST   | /events                   | Admin   | Create event             |
+| PATCH  | /events/:id               | Admin   | Edit event               |
+| DELETE | /events/:id               | Admin   | Delete event             |
 
 ### 🎟 Bookings
 
-| Route           | Method | Role  | Description                 |
-|----------------|--------|-------|-----------------------------|
-| `/bookings`    | POST   | User  | Book 1–4 seats              |
-| `/bookings/me` | GET    | User  | View user’s booked events   |
+| Method | Endpoint       | Role  | Description           |
+|--------|----------------|-------|-----------------------|
+| POST   | /bookings      | User  | Book 1–4 seats        |
+| GET    | /bookings/me   | User  | View my bookings      |
 
 ---
 
-## ✅ Validation & Security
+## ✅ Validation & Auth Notes
 
-- Full request validation using `class-validator`
-- Forbidden unknown fields via `ValidationPipe`
-- 400/403/404 errors with helpful messages
-- Password never exposed in responses
+- Uses NestJS `ValidationPipe` for DTO validation
+- JWT token required for user and admin actions
+- Role-based guards protect sensitive routes
+- Passwords are hashed & excluded from responses
 
 ---
 
 ## 🧪 Testing
 
-Use [Postman](https://www.postman.com/) to test endpoints.
+Use Postman to test API endpoints.
 
-> ✅ Admin credentials should be manually assigned in DB via SQL:
+> ✅ Manually set role in DB for admin user:
 ```sql
 UPDATE "user" SET role = 'admin' WHERE email = 'admin@example.com';
 ```
@@ -109,4 +162,4 @@ UPDATE "user" SET role = 'admin' WHERE email = 'admin@example.com';
 
 ## 👨‍💻 Author
 
-Built by [Your Name] as part of the Deepchain Labs Full-Stack Internship Round 1 submission.
+Built by Xarif as part of the Deepchain Labs Full-Stack Internship assignment.
