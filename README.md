@@ -194,4 +194,4 @@ Once updated, that user will have full admin privileges on login.
 
 ## 👨‍💻 Author
 
-Built by Xarif as part of the Deepchain Labs Full-Stack Internship assignment.
+Built by Md Asif Chowdhury as part of the DCL Internship: Round 1 Assignment.
