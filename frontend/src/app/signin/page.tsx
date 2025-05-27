@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import axios from '@/lib/axios';
 import Button from '@/components/Buttons';
+import { jwtDecode } from 'jwt-decode';
 
 export default function SigninPage() {
   const router = useRouter();
@@ -20,13 +21,17 @@ export default function SigninPage() {
 
     try {
       const res = await axios.post('/auth/login', form);
-      localStorage.setItem('token', res.data.access_token);
+      const token = res.data.access_token;
 
-      const payload = JSON.parse(atob(res.data.access_token.split('.')[1]));
+      localStorage.setItem('token', token);             
+      window.dispatchEvent(new Event('authChange'));
+      const payload: any = jwtDecode(token);      
 
-      if (payload.role === 'admin') router.push('/admin');
-      else router.push('/dashboard');
-
+      if (payload.role === 'admin') {
+        router.push('/admin');
+      } else {
+        router.push('/dashboard');
+      }
     } 
     catch (err: any) {
       setError(err?.response?.data?.message || 'Login failed');
