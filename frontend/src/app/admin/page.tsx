@@ -114,7 +114,7 @@ const AdminDashboardPage = () => {
   };
 
   const handleView = (id: number) => {
-    router.push(`/events/${id}`);
+    router.push(`/event/${id}`);
   };
 
   return (
