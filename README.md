@@ -111,6 +111,59 @@ npm run start:dev
 
 ---
 
+## 🌐 Frontend Routes Overview
+
+| Route                      | Access         | Description                          |
+|---------------------------|----------------|--------------------------------------|
+| `/`                       | Public         | Homepage with events list            |
+| `/event/:id`              | Public         | Event details page                   |
+| `/signin`                 | Public         | User sign in                         |
+| `/signup`                 | Public         | User registration                    |
+| `/dashboard`              | Authenticated  | User dashboard for booked events     |
+| `/admin`                  | Admin Only     | Admin dashboard to manage events     |
+
+> 🔐 Authenticated routes require a valid JWT. Admin routes check for `role = 'admin'`.
+
+---
+
+## 🧪 Running Both Servers Simultaneously
+
+You can run both the frontend and backend in one terminal using:
+
+```bash
+npm run start:all
+```
+
+This uses the `concurrently` package to start both dev servers.
+
+If you haven't already installed it, run:
+
+```bash
+npm install --save-dev concurrently
+```
+
+> Alternatively, you can run each server separately as documented in the sections above.
+
+---
+
+### 🔑 How to Set Up an Admin User
+
+By default, all users who register through `/auth/signup` are created with the role `user`. To promote someone to an admin (so they can access the admin dashboard and manage events), you need to manually update their role in the database.
+
+#### ✅ Example:
+
+After registering a user with the email `admin@example.com`, run the following SQL in your PostgreSQL database:
+
+```sql
+UPDATE "user" SET role = 'admin' WHERE email = 'admin@example.com';
+```
+
+> 💡 You can run this command using tools like **pgAdmin**, **DBeaver**, or directly in the terminal using `psql`.
+
+Once updated, that user will have full admin privileges on login.
+
+---
+
 ## 📌 API Overview
 
 ### 🔐 Auth Routes
@@ -149,26 +202,6 @@ npm run start:dev
 
 ---
 
-## 🧪 Testing
-
-Use Postman to test API endpoints.
-
-### 🔑 How to Set Up an Admin User
-
-By default, all users who register through `/auth/signup` are created with the role `user`. To promote someone to an admin (so they can access the admin dashboard and manage events), you need to manually update their role in the database.
-
-#### ✅ Example:
-
-After registering a user with the email `admin@example.com`, run the following SQL in your PostgreSQL database:
-
-```sql
-UPDATE "user" SET role = 'admin' WHERE email = 'admin@example.com';
-```
-
-Once updated, that user will have full admin privileges on login.
-
----
-
 ## 👨‍💻 Author
 
-Built by Asif Chowdhury as part of the Deepchain Labs Full-Stack Internship assignment.
+Built by Xarif as part of the Deepchain Labs Full-Stack Internship assignment.

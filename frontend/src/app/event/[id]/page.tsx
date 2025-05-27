@@ -71,8 +71,8 @@ const EventDetailsPage = () => {
     }
   };
 
-  if (loading) return <p className="text-center mt-10">Loading...</p>;
-  if (!event) return <p className="text-center mt-10">Event not found</p>;
+  if (loading) return <p className="text-center mt-16">Loading...</p>;
+  if (!event) return <p className="text-center mt-16">Event not found</p>;
 
   const tags = event.tags.split(',').map((tag) => tag.trim());
 

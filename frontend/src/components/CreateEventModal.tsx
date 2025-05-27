@@ -24,7 +24,7 @@ const CreateEventModal: React.FC<CreateEventModalProps> = ({ isOpen, onClose }) 
         },
       });
       onClose();
-      router.refresh();
+      window.location.reload();
     } catch (err) {
       console.error('Failed to create event:', err);
       // You can improve this by passing an error handler to EventForm if needed

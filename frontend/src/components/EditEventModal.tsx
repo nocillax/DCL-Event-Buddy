@@ -54,7 +54,7 @@ const EditEventModal: React.FC<EditEventModalProps> = ({ id, onClose }) => {
         },
       });
       onClose();
-      router.refresh();
+      window.location.reload();
     } catch (err) {
       console.error('Update failed', err);
     }

@@ -20,5 +20,8 @@
   "bugs": {
     "url": "https://github.com/nocillax/DCL-Event-Buddy/issues"
   },
-  "homepage": "https://github.com/nocillax/DCL-Event-Buddy#readme"
+  "homepage": "https://github.com/nocillax/DCL-Event-Buddy#readme",
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
 }
