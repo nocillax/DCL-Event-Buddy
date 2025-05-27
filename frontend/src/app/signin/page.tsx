@@ -6,7 +6,7 @@ import axios from '@/lib/axios';
 import Button from '@/components/Buttons';
 import { jwtDecode } from 'jwt-decode';
 
-export default function SigninPage() {
+const SigninPage = () => {
   const router = useRouter();
   const [form, setForm] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
@@ -23,28 +23,25 @@ export default function SigninPage() {
       const res = await axios.post('/auth/login', form);
       const token = res.data.access_token;
 
-      localStorage.setItem('token', token);             
+      localStorage.setItem('token', token);
       window.dispatchEvent(new Event('authChange'));
-      const payload: any = jwtDecode(token);      
+      const payload: any = jwtDecode(token);
 
       if (payload.role === 'admin') {
         router.push('/admin');
       } else {
         router.push('/dashboard');
       }
-    } 
-    catch (err: any) {
+    } catch (err: any) {
       setError(err?.response?.data?.message || 'Login failed');
     }
   };
 
- return (
+  return (
     <div className="min-h-screen flex items-center justify-center">
       <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-sm relative">
         <div className="absolute top-0 left-0 w-8 h-8 bg-[#eef0ff] rotate-45 transform -translate-x-1/2 -translate-y-1/2"></div>
-        <h2 className="text-3xl font-semibold text-eb-purple mb-3">
-          Sign in
-        </h2>
+        <h2 className="text-3xl font-semibold text-eb-purple mb-3">Sign in</h2>
 
         <p className="text-sm text-purple-700 mt-5 mb-6">
           New User?{' '}
@@ -54,7 +51,10 @@ export default function SigninPage() {
         </p>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-eb-purple mb-1">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-eb-purple mb-1"
+            >
               Email
             </label>
             <input
@@ -69,7 +69,10 @@ export default function SigninPage() {
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-eb-purple mt-7 mb-1">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-eb-purple mt-7 mb-1"
+            >
               Password
             </label>
             <input
@@ -88,9 +91,10 @@ export default function SigninPage() {
           <Button type="submit" className="w-full py-2">
             Sign In
           </Button>
-
         </form>
       </div>
     </div>
-);
-}
+  );
+};
+
+export default SigninPage;

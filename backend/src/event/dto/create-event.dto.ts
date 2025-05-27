@@ -2,7 +2,6 @@ import {
   IsDateString,
   IsInt,
   IsNotEmpty,
-  IsString,
   Matches,
   MaxLength,
   Min,

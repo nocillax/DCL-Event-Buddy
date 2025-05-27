@@ -1,4 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Entity()
 export class Event {
@@ -11,14 +17,14 @@ export class Event {
   @Column('text')
   description: string;
 
-  @Column({ type: 'date' } )
-  eventDate: string; // format: 'YYYY-MM-DD'
+  @Column({ type: 'date' })
+  eventDate: string;
 
   @Column({ type: 'time', nullable: true })
-  startTime: string; // format: 'HH:mm:ss'
+  startTime: string;
 
   @Column({ type: 'time', nullable: true })
-  endTime: string; // format: 'HH:mm:ss'
+  endTime: string;
 
   @Column()
   location: string;

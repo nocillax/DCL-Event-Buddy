@@ -113,6 +113,10 @@ const AdminDashboardPage = () => {
     }
   };
 
+  const handleView = (id: number) => {
+    router.push(`/events/${id}`);
+  };
+
   return (
     <PageContainer>
       <div className="p-6">
@@ -169,7 +173,10 @@ const AdminDashboardPage = () => {
                       {e.bookedSeats} / {e.maxSeats}
                     </td>
                     <td className="px-4 py-2 text-xs flex space-x-2">
-                      <button className="text-gray-600 hover:text-blue-600">
+                      <button
+                        onClick={() => handleView(e.id)}
+                        className="text-gray-600 hover:text-blue-600"
+                      >
                         <FaEye />
                       </button>
 
