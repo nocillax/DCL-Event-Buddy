@@ -36,11 +36,21 @@ Install dependencies for both frontend and backend with one command:
 npm run install-all
 ```
 
-To run both servers together:
+You can run both the frontend and backend in one terminal using:
 
 ```bash
 npm run start:all
 ```
+
+This uses the `concurrently` package to start both dev servers.
+
+If you haven't already installed it, run:
+
+```bash
+npm install --save-dev concurrently
+```
+
+> Alternatively, you can run each server separately.
 
 ---
 
@@ -113,36 +123,16 @@ npm run start:dev
 
 ## 🌐 Frontend Routes Overview
 
-| Route                      | Access         | Description                          |
-|---------------------------|----------------|--------------------------------------|
-| `/`                       | Public         | Homepage with events list            |
-| `/event/:id`              | Public         | Event details page                   |
-| `/signin`                 | Public         | User sign in                         |
-| `/signup`                 | Public         | User registration                    |
-| `/dashboard`              | Authenticated  | User dashboard for booked events     |
-| `/admin`                  | Admin Only     | Admin dashboard to manage events     |
+| Route        | Access        | Description                      |
+| ------------ | ------------- | -------------------------------- |
+| `/`          | Public        | Homepage with events list        |
+| `/event/:id` | Public        | Event details page               |
+| `/signin`    | Public        | User sign in                     |
+| `/signup`    | Public        | User registration                |
+| `/dashboard` | Authenticated | User dashboard for booked events |
+| `/admin`     | Admin Only    | Admin dashboard to manage events |
 
 > 🔐 Authenticated routes require a valid JWT. Admin routes check for `role = 'admin'`.
-
----
-
-## 🧪 Running Both Servers Simultaneously
-
-You can run both the frontend and backend in one terminal using:
-
-```bash
-npm run start:all
-```
-
-This uses the `concurrently` package to start both dev servers.
-
-If you haven't already installed it, run:
-
-```bash
-npm install --save-dev concurrently
-```
-
-> Alternatively, you can run each server separately as documented in the sections above.
 
 ---
 
@@ -168,28 +158,28 @@ Once updated, that user will have full admin privileges on login.
 
 ### 🔐 Auth Routes
 
-| Method | Endpoint         | Description     |
-|--------|------------------|-----------------|
-| POST   | /auth/signup     | Register a user |
-| POST   | /auth/login      | Login + JWT     |
+| Method | Endpoint     | Description     |
+| ------ | ------------ | --------------- |
+| POST   | /auth/signup | Register a user |
+| POST   | /auth/login  | Login + JWT     |
 
 ### 📅 Events
 
-| Method | Endpoint                  | Role    | Description              |
-|--------|---------------------------|---------|--------------------------|
-| GET    | /events                   | Public  | List all events          |
-| GET    | /events/:id               | Public  | Get event details        |
-| GET    | /events?upcoming=true     | Public  | Filter upcoming events   |
-| POST   | /events                   | Admin   | Create event             |
-| PATCH  | /events/:id               | Admin   | Edit event               |
-| DELETE | /events/:id               | Admin   | Delete event             |
+| Method | Endpoint              | Role   | Description            |
+| ------ | --------------------- | ------ | ---------------------- |
+| GET    | /events               | Public | List all events        |
+| GET    | /events/:id           | Public | Get event details      |
+| GET    | /events?upcoming=true | Public | Filter upcoming events |
+| POST   | /events               | Admin  | Create event           |
+| PATCH  | /events/:id           | Admin  | Edit event             |
+| DELETE | /events/:id           | Admin  | Delete event           |
 
 ### 🎟 Bookings
 
-| Method | Endpoint       | Role  | Description           |
-|--------|----------------|-------|-----------------------|
-| POST   | /bookings      | User  | Book 1–4 seats        |
-| GET    | /bookings/me   | User  | View my bookings      |
+| Method | Endpoint     | Role | Description      |
+| ------ | ------------ | ---- | ---------------- |
+| POST   | /bookings    | User | Book 1–4 seats   |
+| GET    | /bookings/me | User | View my bookings |
 
 ---
 
