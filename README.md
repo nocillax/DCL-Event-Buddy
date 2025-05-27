@@ -153,13 +153,22 @@ npm run start:dev
 
 Use Postman to test API endpoints.
 
-> ✅ Manually set role in DB for admin user:
+### 🔑 How to Set Up an Admin User
+
+By default, all users who register through `/auth/signup` are created with the role `user`. To promote someone to an admin (so they can access the admin dashboard and manage events), you need to manually update their role in the database.
+
+#### ✅ Example:
+
+After registering a user with the email `admin@example.com`, run the following SQL in your PostgreSQL database:
+
 ```sql
 UPDATE "user" SET role = 'admin' WHERE email = 'admin@example.com';
 ```
+
+Once updated, that user will have full admin privileges on login.
 
 ---
 
 ## 👨‍💻 Author
 
-Built by Xarif as part of the Deepchain Labs Full-Stack Internship assignment.
+Built by Asif Chowdhury as part of the Deepchain Labs Full-Stack Internship assignment.
