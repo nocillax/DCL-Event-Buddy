@@ -1,4 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  CreateDateColumn,
+} from 'typeorm';
 import { User } from '../user/user.entity';
 import { Event } from '../event/event.entity';
 
@@ -10,7 +16,7 @@ export class Booking {
   @ManyToOne(() => User)
   user: User;
 
-  @ManyToOne(() => Event)
+  @ManyToOne(() => Event, { onDelete: 'CASCADE' })
   event: Event;
 
   @Column()
