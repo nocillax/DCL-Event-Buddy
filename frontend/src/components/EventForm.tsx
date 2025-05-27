@@ -2,12 +2,13 @@
 
 import { useEffect, useRef, useState } from 'react';
 import Button from './Buttons';
+import dayjs from 'dayjs';
 
 type EventFormProps = {
   mode: 'create' | 'edit';
   initialValues?: Partial<EventFormData>;
   onSubmit: (formData: FormData) => Promise<void>;
-  onClose?: () => void; // <-- Add this line!
+  onClose?: () => void;
 };
 
 
@@ -15,7 +16,8 @@ type EventFormData = {
   title: string;
   description: string;
   eventDate: string;
-  eventTime: string;
+  startTime: string;
+  endTime: string;
   location: string;
   maxSeats: number;
   tags: string;
@@ -26,10 +28,16 @@ const EventForm: React.FC<EventFormProps> = ({ mode, initialValues = {}, onSubmi
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [touched, setTouched] = useState<Record<string, boolean>>({});
 
+
+const [showTimePicker, setShowTimePicker] = useState(false);
+
+
   const [title, setTitle] = useState(initialValues.title || '');
   const [description, setDescription] = useState(initialValues.description || '');
   const [eventDate, setEventDate] = useState(initialValues.eventDate || '');
-  const [eventTime, setEventTime] = useState(initialValues.eventTime || '');
+  const [startTime, setStartTime] = useState('');
+  const [endTime, setEndTime] = useState('');
+  const [timeRangeDisplay, setTimeRangeDisplay] = useState('');
   const [location, setLocation] = useState(initialValues.location || '');
   const [maxSeats, setMaxSeats] = useState(initialValues.maxSeats || 1);
   const [tags, setTags] = useState(initialValues.tags || '');
@@ -43,7 +51,8 @@ const EventForm: React.FC<EventFormProps> = ({ mode, initialValues = {}, onSubmi
     if (title.trim().length < 3) e.title = 'Title must be at least 3 characters';
     if (description.trim().length < 10) e.description = 'Description too short';
     if (!eventDate) e.eventDate = 'Date is required';
-    if (!eventTime) e.eventTime = 'Time is required';
+    if (!startTime) e.startTime = 'Start time is required';
+    if (!endTime) e.endTime = 'End time is required';
     if (!location.trim()) e.location = 'Location is required';
     if (maxSeats < 1) e.maxSeats = 'At least 1 seat is required';
     if (!tags.trim()) e.tags = 'Tags are required';
@@ -52,7 +61,23 @@ const EventForm: React.FC<EventFormProps> = ({ mode, initialValues = {}, onSubmi
 
   useEffect(() => {
     setErrors(validate());
-  }, [title, description, eventDate, eventTime, location, maxSeats, tags]);
+  }, [title, description, eventDate, startTime, endTime, location, maxSeats, tags]);
+
+  useEffect(() => {
+  if (mode === 'edit' && initialValues.startTime && initialValues.endTime) {
+    const st = initialValues.startTime.slice(0, 5); // e.g., "09:00"
+    const et = initialValues.endTime.slice(0, 5);
+
+    setStartTime(st);
+    setEndTime(et);
+
+    const formattedStart = dayjs(`2024-01-01T${st}`).format('hh:mm A');
+    const formattedEnd = dayjs(`2024-01-01T${et}`).format('hh:mm A');
+
+    setTimeRangeDisplay(`${formattedStart} – ${formattedEnd}`);
+  }
+}, [initialValues, mode]);
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -61,7 +86,6 @@ const EventForm: React.FC<EventFormProps> = ({ mode, initialValues = {}, onSubmi
       title: true,
       description: true,
       eventDate: true,
-      eventTime: true,
       location: true,
       maxSeats: true,
       tags: true,
@@ -78,7 +102,8 @@ const EventForm: React.FC<EventFormProps> = ({ mode, initialValues = {}, onSubmi
     formData.append('title', title);
     formData.append('description', description);
     formData.append('eventDate', eventDate);
-    formData.append('eventTime', eventTime.length === 5 ? `${eventTime}:00` : eventTime);
+    formData.append('startTime', startTime.length === 5 ? `${startTime}:00` : startTime);
+    formData.append('endTime', endTime.length === 5 ? `${endTime}:00` : endTime);
     formData.append('location', location);
     formData.append('maxSeats', maxSeats.toString());
     formData.append('tags', tags);
@@ -133,13 +158,63 @@ const EventForm: React.FC<EventFormProps> = ({ mode, initialValues = {}, onSubmi
         <div className="flex-1">
           <label className="block font-medium mb-1">Time</label>
           <input
-            type="time"
-            value={eventTime}
-            onChange={(e) => setEventTime(e.target.value)}
-            onBlur={() => setTouched((prev) => ({ ...prev, eventTime: true }))}
-            className="w-full border rounded-md px-3 py-2"
+            type="text"
+            readOnly
+            value={timeRangeDisplay}
+            placeholder="e.g. 09:00 AM – 11:00 AM"
+            onClick={() => setShowTimePicker(true)}
+            className="w-full border rounded-md px-3 py-2 cursor-pointer"
           />
-          {touched.eventTime && errors.eventTime && <p className="text-red-500">{errors.eventTime}</p>}
+
+          {showTimePicker && (
+            <div className="absolute z-50 bg-white border rounded p-4 mt-2 shadow-md w-72">
+              <div className="mb-2">
+                <label className="text-sm font-medium">Start Time</label>
+                <input
+                  type="time"
+                  value={startTime}
+                  onChange={(e) => setStartTime(e.target.value)}
+                  className="w-full border px-2 py-1 mt-1 rounded"
+                />
+              </div>
+              <div className="mb-4">
+                <label className="text-sm font-medium">End Time</label>
+                <input
+                  type="time"
+                  value={endTime}
+                  onChange={(e) => setEndTime(e.target.value)}
+                  className="w-full border px-2 py-1 mt-1 rounded"
+                />
+              </div>
+              <div className="flex justify-end gap-2">
+                <button
+                  onClick={() => setShowTimePicker(false)}
+                  className="text-sm px-4 py-1 rounded border"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => {
+                    const parsedStart = dayjs(`2024-01-01T${startTime}`, 'YYYY-MM-DDTHH:mm');
+                    const parsedEnd = dayjs(`2024-01-01T${endTime}`, 'YYYY-MM-DDTHH:mm');
+
+                    const formattedStart = parsedStart.format('hh:mm A');
+                    const formattedEnd = parsedEnd.format('hh:mm A');
+
+                    setTimeRangeDisplay(`${formattedStart} – ${formattedEnd}`);
+                    setShowTimePicker(false);
+                  }}
+
+                  disabled={!startTime || !endTime}
+                >
+                  Set Time
+                </button>
+
+
+              </div>
+            </div>
+          )}
+
         </div>
       </div>
 
@@ -228,13 +303,15 @@ const EventForm: React.FC<EventFormProps> = ({ mode, initialValues = {}, onSubmi
       {submitError && <p className="text-red-600 text-sm">{submitError}</p>}
 
       <div className="flex justify-end gap-4 pt-4">
-        <button
+        {onClose && (
+            <button
             type="button"
-            onClick={() => onClose?.()} // make it safe for CreateEventModal too
+            onClick={() => onClose()}
             className="text-gray-500 hover:text-gray-700 text-sm font-medium"
-        >
+            >
             Cancel
-        </button>
+            </button>
+        )}
         <Button type="submit" className="text-white px-4 py-2 text-sm">
             {mode === 'edit' ? 'Update Event' : 'Create Event'}
         </Button>

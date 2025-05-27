@@ -15,7 +15,11 @@ export class CreateEventDto {
 
   @IsNotEmpty({ message: 'Event time is required' })
   @Matches(/^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/, { message: 'Invalid time format. Use HH:mm:ss (24-hour)',})
-  eventTime: string;
+  startTime: string;
+
+  @IsNotEmpty({ message: 'Event time is required' })
+  @Matches(/^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/, { message: 'Invalid time format. Use HH:mm:ss (24-hour)',})
+  endTime: string;
 
   @IsNotEmpty({ message: 'Location is required' })
   location: string;

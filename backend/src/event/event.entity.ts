@@ -11,12 +11,17 @@ export class Event {
   @Column('text')
   description: string;
 
-  @Column({ type: 'date' })
+  @Column({ type: 'date' } )
   eventDate: string; // format: 'YYYY-MM-DD'
 
-  @Column({ type: 'time' })
+  @Column({ type: 'time', nullable: true })
   eventTime: string; // format: 'HH:mm:ss'
 
+  @Column({ type: 'time', nullable: true })
+  startTime: string; // format: 'HH:mm:ss'
+
+  @Column({ type: 'time', nullable: true })
+  endTime: string; // format: 'HH:mm:ss'
 
   @Column()
   location: string;

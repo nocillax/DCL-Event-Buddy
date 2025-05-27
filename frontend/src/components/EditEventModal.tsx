@@ -30,7 +30,8 @@ const EditEventModal: React.FC<EditEventModalProps> = ({ id, onClose }) => {
           title: e.title,
           description: e.description,
           eventDate: e.eventDate,
-          eventTime: e.eventTime,
+          startTime: e.startTime,
+          endTime: e.endTime,
           location: e.location,
           maxSeats: e.maxSeats,
           tags: e.tags,
@@ -73,7 +74,7 @@ const EditEventModal: React.FC<EditEventModalProps> = ({ id, onClose }) => {
           <h2 className="text-2xl font-medium text-eb-purple mb-6">Edit Event</h2>
           {error && <p className="text-red-500">{error}</p>}
           {!initialValues ? <p>Loading...</p> : (
-            <EventForm mode="edit" initialValues={initialValues} onSubmit={handleUpdate} />
+            <EventForm mode="edit" initialValues={initialValues} onSubmit={handleUpdate} onClose={onClose}/>
           )}
         </div>
       </div>

@@ -43,7 +43,7 @@ const CreateEventModal: React.FC<CreateEventModalProps> = ({ isOpen, onClose }) 
             <IoMdClose size={20} />
           </button>
           <h2 className="text-2xl font-medium text-eb-purple mb-6">Create New Event</h2>
-          <EventForm mode="create" onSubmit={handleCreate} />
+          <EventForm mode="create" onSubmit={handleCreate} onClose={onClose} />
         </div>
       </div>
     </Dialog>

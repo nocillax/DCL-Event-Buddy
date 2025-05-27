@@ -31,7 +31,7 @@ export class BookingService {
 
   // Check for past event
   const now = new Date();
-  const eventDate = new Date(`${event.eventDate}T${event.eventTime}`);
+  const eventDate = new Date(`${event.eventDate}T${event.startTime}`);
   if (eventDate <= now) {
     throw new BadRequestException('Cannot book a past event');
   }

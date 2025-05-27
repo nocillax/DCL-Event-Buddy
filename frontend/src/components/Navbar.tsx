@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { jwtDecode } from 'jwt-decode';
 import Button from './Buttons';
 import { FaSignOutAlt } from 'react-icons/fa';
+import { usePathname } from 'next/navigation';
 
 interface JwtPayload {
   name?: string;
@@ -15,6 +16,13 @@ interface JwtPayload {
 }
 
 const Navbar = () => {
+
+
+  const pathname = usePathname();
+  const isAuthPage = pathname === '/signin' || pathname === '/signup';
+
+
+
   const [userName, setUserName] = useState<string | null>(null);
   const router = useRouter();
 
@@ -63,24 +71,26 @@ const Navbar = () => {
           <img src="/ticket-2.svg" alt="Event Buddy Logo" />
           <span className="text-2xl font-bold">Event buddy.</span>
         </div>
-
-        {userName ? (
-          <div className="flex items-center space-x-5">
-            <span className="text-sm text-eb-purple">Hello, {userName}</span>
-            <Button className="px-3 py-1 flex items-center gap-2 text-sm" onClick={handleLogout}>
-              <FaSignOutAlt /> Logout
-            </Button>
-          </div>
-        ) : (
-          <div className="flex space-x-5">
-            <Button className="px-4 py-1 text-sm" onClick={() => router.push('/signin')}>
-              Sign In
-            </Button>
-            <Button className="px-3 py-1 text-sm" onClick={() => router.push('/signup')}>
-              Sign Up
-            </Button>
-          </div>
+        {!isAuthPage && (
+          userName ? (
+            <div className="flex items-center space-x-5">
+              <span className="text-sm text-eb-purple">Hello, {userName}</span>
+              <Button className="px-3 py-1 flex items-center gap-2 text-sm" onClick={handleLogout}>
+                <FaSignOutAlt /> Logout
+              </Button>
+            </div>
+          ) : (
+            <div className="flex space-x-5">
+              <Button className="px-4 py-1 text-sm" onClick={() => router.push('/signin')}>
+                Sign In
+              </Button>
+              <Button className="px-3 py-1 text-sm" onClick={() => router.push('/signup')}>
+                Sign Up
+              </Button>
+            </div>
+          )
         )}
+
       </nav>
     </div>
   );

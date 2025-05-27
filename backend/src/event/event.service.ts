@@ -18,44 +18,45 @@ export class EventService {
 
 
   async findAll(
-    upcoming: boolean | null = null,
-    page: number = 1,
-    limit: number = 5,
-  ) {
-    const now = new Date();
-    const today = now.toISOString().split('T')[0];       // 'YYYY-MM-DD'
-    const currentTime = now.toTimeString().split(' ')[0]; // 'HH:mm:ss'
+  upcoming: boolean | null = null,
+  page: number = 1,
+  limit: number = 5,
+) {
+  const now = new Date();
+  const today = now.toISOString().split('T')[0];       // 'YYYY-MM-DD'
+  const currentTime = now.toTimeString().split(' ')[0]; // 'HH:mm:ss'
 
-    const query = this.eventRepo.createQueryBuilder('event');
+  const query = this.eventRepo.createQueryBuilder('event');
 
-    if (upcoming === true) {
-      query.where('event.eventDate > :today', { today })
-        .orWhere('event.eventDate = :today AND event.eventTime > :now', {
-          today,
-          now: currentTime,
-        });
-    } else if (upcoming === false) {
-      query.where('event.eventDate < :today', { today })
-        .orWhere('event.eventDate = :today AND event.eventTime <= :now', {
-          today,
-          now: currentTime,
-        });
-    }
-
-    const [events, total] = await query
-      .orderBy('event.eventDate', 'DESC')
-      .addOrderBy('event.eventTime', 'DESC')
-      .skip((page - 1) * limit)
-      .take(limit)
-      .getManyAndCount();
-
-    return {
-      events,
-      total,
-      page,
-      totalPages: Math.ceil(total / limit),
-    };
+  if (upcoming === true) {
+    query.where('event.eventDate > :today', { today })
+      .orWhere('event.eventDate = :today AND event.startTime > :now', {
+        today,
+        now: currentTime,
+      });
+  } else if (upcoming === false) {
+    query.where('event.eventDate < :today', { today })
+      .orWhere('event.eventDate = :today AND event.startTime <= :now', {
+        today,
+        now: currentTime,
+      });
   }
+
+  const [events, total] = await query
+    .orderBy('event.eventDate', 'DESC')
+    .addOrderBy('event.startTime', 'DESC')
+    .skip((page - 1) * limit)
+    .take(limit)
+    .getManyAndCount();
+
+  return {
+    events,
+    total,
+    page,
+    totalPages: Math.ceil(total / limit),
+  };
+}
+
 
 
 

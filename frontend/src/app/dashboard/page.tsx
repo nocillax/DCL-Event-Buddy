@@ -13,10 +13,12 @@ interface Booking {
   id: number;
   seats: number;
   createdAt: string;
+  
   event: {
     title: string;
     eventDate: string;
-    eventTime: string;
+    startTime: string;
+    endTime: string;
     location: string;
   };
 }
@@ -103,7 +105,9 @@ export default function DashboardPage() {
           </div>
           <div className="flex items-center space-x-1">
             <FaClock />
-            <span>{event.eventTime}</span>
+            <span>
+              {dayjs(`2024-01-01T${event.startTime}`).format('h:mm A')} – {dayjs(`2024-01-01T${event.endTime}`).format('h:mm A')}
+            </span>
           </div>
           <div className="flex items-center space-x-1">
             <FaMapMarkerAlt />
@@ -127,7 +131,7 @@ export default function DashboardPage() {
 
   return (
   <PageContainer>
-    <div className="pl-6 pt-6 pr-6">
+    <div className="p-6">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-semibold text-eb-purple mt-12 ">Dashboard</h2>
       </div>

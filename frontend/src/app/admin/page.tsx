@@ -14,7 +14,8 @@ interface Event {
   id: number;
   title: string;
   eventDate: string;
-  eventTime: string;
+  startTime: string;
+  endTime: string;
   location: string;
   maxSeats: number;
   bookedSeats: number;
@@ -132,7 +133,7 @@ const AdminDashboardPage = () => {
  return (
   <PageContainer>
 
-      <div className="pl-6 pt-6 pr-6">
+      <div className="p-6">
       <div className="flex justify-between items-center">
         <h2 className="text-3xl font-medium text-eb-purple mt-12 ">Admin Dashboard</h2>
       </div>
