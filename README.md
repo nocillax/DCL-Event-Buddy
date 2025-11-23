@@ -1,6 +1,5 @@
 # 🎟️ DCL Event Buddy – Full Stack Application
 
-> Internship Project – Deepchain Labs (Round 1 Assessment)
 
 Event Buddy is a full-stack event management platform allowing users to browse and book events, and giving admins full control over event listings. This repo contains both the **frontend (Next.js)** and **backend (NestJS + PostgreSQL)** services.
 
@@ -194,4 +193,4 @@ Once updated, that user will have full admin privileges on login.
 
 ## 👨‍💻 Author
 
-Built by Md Asif Chowdhury as part of the DCL Internship: Round 1 Assignment.
+NoCiLLaX
